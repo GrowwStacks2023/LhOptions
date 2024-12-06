@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 ALLOWED_METHODS = ["OPTIONS", "GET", "HEAD", "POST"]
 
-WEBHOOK_URL = "https://hook.eu1.make.com/lc74y3fjlqcoaoocdfhr7x5r3os81zd6"  # Target URL
+WEBHOOK_URL = "https://hook.eu1.make.com/9hvi1c6nb9gaql5r6ig03vtk6shvmoju"  # Target URL
 
 @app.route('/lufthansacargo/trackingCallback', methods=['OPTIONS', 'GET', 'HEAD', 'POST'])
 def webhook():
