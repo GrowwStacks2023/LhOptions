@@ -20,23 +20,30 @@ def webhook():
         return response
 
     if request.method == 'POST':
+        # Handle POST request (get JSON body)
         data = request.get_json()
-        print(f"Received data: {data}")
+        print(f"Received data (POST): {data}")
 
-        # Send the data to the target webhook URL
-        try:
-            forward_response = requests.post(WEBHOOK_URL, json=data)
-            forward_response.raise_for_status()  # Will raise an exception for 4xx/5xx responses
-            print("Data forwarded successfully.")
-        except requests.exceptions.RequestException as e:
-            print(f"Error forwarding data: {e}")
-            return {'status': 'error', 'message': 'Failed to forward data'}, 500
+    elif request.method == 'GET':
+        # Handle GET request (get query parameters)
+        data = request.args.to_dict()
+        print(f"Received data (GET): {data}")
 
-        # Respond back to the sender
-        response = {'status': 'success', 'message': 'Data received and forwarded successfully'}
-        return response, 200
+    else:
+        return {'message': 'Method not allowed'}, 405
 
-    return {'message': 'Method not allowed'}, 405
+    # Send the data to the target webhook URL
+    try:
+        forward_response = requests.post(WEBHOOK_URL, json=data)
+        forward_response.raise_for_status()  # Will raise an exception for 4xx/5xx responses
+        print("Data forwarded successfully.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error forwarding data: {e}")
+        return {'status': 'error', 'message': 'Failed to forward data'}, 500
+
+    # Respond back to the sender
+    response = {'status': 'success', 'message': 'Data received and forwarded successfully'}
+    return response, 200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
